@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+// eslint-disable-next-line react/prop-types
+const Login = ({ onAuth }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -19,7 +20,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +30,14 @@ const Login = () => {
 
       const result = await response.json();
       if (response.ok) {
+        // Store the JWT token in localStorage
+        localStorage.setItem('token', result.token);
+
+        // Call onAuth to update authentication status
+        onAuth(true);
+
         setMessage('Login successful');
+        // Navigate to the dashboard after successful login
         navigate('/dashboard');
       } else {
         setMessage(result.message || 'Incorrect username or password');

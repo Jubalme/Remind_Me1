@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Register = () => {
+// eslint-disable-next-line react/prop-types
+const Register = ({ onAuth }) => {
   const [formData, setFormData] = useState({
-    name: '', // Updated to 'name'
+    name: '',
     email: '',
     username: '',
     password: '',
@@ -31,8 +32,10 @@ const Register = () => {
 
       const result = await response.json();
       if (response.ok) {
+        localStorage.setItem('token', result.token); // Assuming you get a token in response
         setMessage('Registration successful');
-        navigate('/dashboard');
+        onAuth(true); // Set authenticated status to true
+        navigate('/dashboard'); // Redirect to the dashboard
       } else {
         setMessage(result.message || 'Registration failed');
       }
@@ -52,7 +55,7 @@ const Register = () => {
           <input
             type="text"
             id="name"
-            name="name" // Updated to 'name'
+            name="name"
             value={name}
             onChange={onChange}
             className="w-full p-2 border border-purple-400 rounded-lg"

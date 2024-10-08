@@ -1,4 +1,4 @@
-
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   return (
@@ -9,11 +9,17 @@ const Dashboard = () => {
       </p>
 
       <div className="mt-6">
-        <h2 className="text-2xl font-semibold text-purple-600 mb-2">Whats Next?</h2>
+        <h2 className="text-2xl font-semibold text-purple-600 mb-2">What Next?</h2>
         <ul className="list-disc list-inside text-gray-600">
-          <li>Create new reminders and tasks.</li>
-          <li>View your upcoming tasks and deadlines.</li>
-          <li>Edit or delete tasks as needed.</li>
+          <li>
+            <Link to="/dashboard/add-task" className="text-purple-700 hover:underline">Create new reminders and tasks</Link>
+          </li>
+          <li>
+            <Link to="/dashboard/my-tasks" className="text-purple-700 hover:underline">View your upcoming tasks and deadlines</Link>
+          </li>
+          <li>
+            <Link to="/dashboard/completed-tasks" className="text-purple-700 hover:underline">View completed tasks</Link>
+          </li>
         </ul>
       </div>
     </div>
