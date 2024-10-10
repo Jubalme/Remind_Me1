@@ -28,5 +28,21 @@ const getTasks = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+// controllers/taskController.js
 
-module.exports = { addTask, getTasks };
+
+// Get all non-completed tasks for a specific user
+const getNonCompletedTasks = async (req, res) => {
+  try {
+    const userId = req.user.id; // assuming user ID is stored in the request
+    const tasks = await Task.find({ user: userId, completed: false });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving tasks' });
+  }
+};
+
+
+
+
+module.exports = { addTask, getTasks,getNonCompletedTasks };

@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import { useState } from 'react';
 import AddTaskPage from './pages/AddTaskPage';
+import MyTasksPage from './pages/MyTasksPage';
+import CompletedTasksPage from './pages/CompletedTasksPage';
 // App component
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // To track user authentication status
@@ -51,6 +53,11 @@ const App = () => {
             <Route path="/register" element={<Register onAuth={handleAuth} />} />
             <Route path="/login" element={<Login onAuth={handleAuth} />} />
             <Route path="/dashboard/add-task" element={isAuthenticated ? <AddTaskPage /> : <Navigate to="/" />} />
+            <Route path="/dashboard/my-tasks" element={isAuthenticated ? <MyTasksPage /> : <Navigate to="/" />} />
+         
+  {/* ... other routes */}
+  <Route path="/dashboard/completed-tasks" element={<CompletedTasksPage />} />
+
 
             {/* Protected route for dashboard */}
             <Route
