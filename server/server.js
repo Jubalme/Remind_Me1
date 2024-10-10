@@ -1,9 +1,9 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./utilities/dbConnection');
 const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./routes/taskroutes'); // Importing task-related routes
 
 dotenv.config();
 const app = express();
@@ -19,19 +19,19 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Include additional methods like PUT and DELETE for tasks
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 
 // Database connection
 connectDB();
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes); // Authentication routes
+app.use('/api/tasks', taskRoutes); // Task-related routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {

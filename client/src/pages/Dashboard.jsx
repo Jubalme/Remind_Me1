@@ -9,16 +9,22 @@ const Dashboard = () => {
       </p>
 
       <div className="mt-6">
-        <h2 className="text-2xl font-semibold text-purple-600 mb-2">What Next?</h2>
+        <h2 className="text-2xl font-semibold text-purple-600 mb-2">Whats Next?</h2>
         <ul className="list-disc list-inside text-gray-600">
           <li>
-            <Link to="/dashboard/add-task" className="text-purple-700 hover:underline">Create new reminders and tasks</Link>
+            <Link to="/dashboard/add-task" className="text-purple-700 hover:underline">
+              Create new reminders and tasks
+            </Link>
           </li>
           <li>
-            <Link to="/dashboard/my-tasks" className="text-purple-700 hover:underline">View your upcoming tasks and deadlines</Link>
+            <Link to="/dashboard/my-tasks" className="text-purple-700 hover:underline">
+              View your upcoming tasks and deadlines
+            </Link>
           </li>
           <li>
-            <Link to="/dashboard/completed-tasks" className="text-purple-700 hover:underline">View completed tasks</Link>
+            <Link to="/dashboard/completed-tasks" className="text-purple-700 hover:underline">
+              View completed tasks
+            </Link>
           </li>
         </ul>
       </div>

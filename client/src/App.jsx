@@ -6,7 +6,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import { useState } from 'react';
-
+import AddTaskPage from './pages/AddTaskPage';
 // App component
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // To track user authentication status
@@ -50,6 +50,8 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/register" element={<Register onAuth={handleAuth} />} />
             <Route path="/login" element={<Login onAuth={handleAuth} />} />
+            <Route path="/dashboard/add-task" element={isAuthenticated ? <AddTaskPage /> : <Navigate to="/" />} />
+
             {/* Protected route for dashboard */}
             <Route
   path="/dashboard"
