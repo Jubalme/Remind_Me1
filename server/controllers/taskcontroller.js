@@ -4,12 +4,14 @@ const Task = require('../models/taskmodel');
 const addTask = async (req, res) => {
   try {
     const { title, description, dueDate } = req.body;
+    const userId = req.user.id; // Ensure that user is logged in and their ID is accessible
 
-    // Create new task document in the database
+    // Create a new task linked to the logged-in user
     const newTask = new Task({
       title,
       description,
       dueDate,
+      user: userId,
     });
 
     await newTask.save();
@@ -18,31 +20,16 @@ const addTask = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
-// Controller to get all tasks (optional)
-const getTasks = async (req, res) => {
+// Fetch incomplete tasks for the logged-in user
+ const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find();
-    res.status(200).json(tasks);
+    const userId = req.user.id; // assuming you have user info in req.user
+    const tasks = await Task.find({ userId, completed: false }); // Get only uncompleted tasks
+    res.json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
-// controllers/taskController.js
-
-
-// Get all non-completed tasks for a specific user
-const getNonCompletedTasks = async (req, res) => {
-  try {
-    const userId = req.user.id; // assuming user ID is stored in the request
-    const tasks = await Task.find({ user: userId, completed: false });
-    res.status(200).json(tasks);
-  } catch (error) {
-    res.status(500).json({ message: 'Error retrieving tasks' });
+    res.status(500).json({ message: 'Error fetching tasks' });
   }
 };
 
 
-
-
-module.exports = { addTask, getTasks,getNonCompletedTasks };
+module.exports = { addTask ,getTasks};

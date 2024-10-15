@@ -1,14 +1,14 @@
-
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Home from "./pages/Home";
 import About from './pages/About';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import { useState } from 'react';
 import AddTaskPage from './pages/AddTaskPage';
 import MyTasksPage from './pages/MyTasksPage';
 import CompletedTasksPage from './pages/CompletedTasksPage';
+import { useState } from 'react';
+
 // App component
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // To track user authentication status
@@ -17,7 +17,6 @@ const App = () => {
   const handleAuth = (status) => {
     setIsAuthenticated(status);
   };
-  
 
   return (
     <Router>
@@ -34,7 +33,11 @@ const App = () => {
               <Link to="/" className="hover:text-gray-200">Home</Link>
               <Link to="/about" className="hover:text-gray-200">About</Link>
               {isAuthenticated ? (
-                <Link to="/dashboard" className="hover:text-gray-200">Dashboard</Link>
+                <>
+                  <Link to="/dashboard" className="hover:text-gray-200">Dashboard</Link>
+                  <Link to="/dashboard/my-tasks" className="hover:text-gray-200">My Tasks</Link>
+                  <Link to="/dashboard/completed-tasks" className="hover:text-gray-200">Completed Tasks</Link>
+                </>
               ) : (
                 <>
                   <Link to="/register" className="hover:text-gray-200">Register</Link>
@@ -52,21 +55,12 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/register" element={<Register onAuth={handleAuth} />} />
             <Route path="/login" element={<Login onAuth={handleAuth} />} />
+
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
             <Route path="/dashboard/add-task" element={isAuthenticated ? <AddTaskPage /> : <Navigate to="/" />} />
             <Route path="/dashboard/my-tasks" element={isAuthenticated ? <MyTasksPage /> : <Navigate to="/" />} />
-         
-  {/* ... other routes */}
-  <Route path="/dashboard/completed-tasks" element={<CompletedTasksPage />} />
-
-
-            {/* Protected route for dashboard */}
-            <Route
-  path="/dashboard"
-  element={
-    isAuthenticated ? <Dashboard /> : <Navigate to="/" />
-  }
-/>
-
+            <Route path="/dashboard/completed-tasks" element={isAuthenticated ? <CompletedTasksPage /> : <Navigate to="/" />} />
           </Routes>
         </main>
       </div>

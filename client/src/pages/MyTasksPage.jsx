@@ -1,58 +1,91 @@
-import { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import axios from 'axios';
+import TaskItem from '../components/TaskItem';
 
 const MyTasksPage = () => {
   const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchTasks = async () => {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setMessage('You are not authorized');
+        return;
+      }
+
       try {
-        const response = await axios.get('http://localhost:3000/api/tasks');
-        if (Array.isArray(response.data)) {
-          setTasks(response.data);
+        const response = await axios.get('http://localhost:3000/api/tasks', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data.length === 0) {
+          setMessage('No tasks added');
         } else {
-          setTasks([]);
+          setTasks(response.data.filter(task => !task.completed)); // Filter for incomplete tasks
         }
       } catch (error) {
-        setError('Failed to fetch tasks');
+        console.error('Error fetching tasks:', error);
+        setMessage('Error fetching tasks');
       }
     };
 
     fetchTasks();
   }, []);
 
-  const handleCompleteTask = async (taskId) => {
+  // Function to handle delete task
+  const handleDelete = async (taskId) => {
+    const token = localStorage.getItem('token');
     try {
-      await axios.patch(`http://localhost:3000/api/tasks/${taskId}/complete`);
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId)); // Remove completed task from the list
+      await axios.delete(`http://localhost:3000/api/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTasks(tasks.filter(task => task._id !== taskId));
     } catch (error) {
-      setError('Failed to mark task as completed');
+      console.error('Error deleting task:', error);
     }
   };
 
+  // Function to handle mark as completed
+  const handleMarkAsCompleted = async (taskId) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.patch(`http://localhost:3000/api/tasks/${taskId}/complete`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTasks(tasks.map(task => (task._id === taskId ? { ...task, completed: true } : task)));
+    } catch (error) {
+      console.error('Error marking task as completed:', error);
+    }
+  };
+
+  // Function to handle edit task
+  const handleEdit = (taskId) => {
+    // Redirect to edit page
+    window.location.href = `/tasks/edit/${taskId}`; // Change this to your edit page route
+  };
+
   return (
-    <div className="bg-white shadow-md rounded p-6 max-w-4xl mx-auto mt-10">
-      <h1 className="text-3xl font-bold text-purple-700 mb-4">My Tasks</h1>
-      {error && <p className="text-red-500">{error}</p>}
-      <ul className="list-disc list-inside text-gray-600">
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <li key={task.id} className="mb-4 p-4 border border-gray-200 rounded">
-              <h3 className="text-xl font-semibold text-purple-700">{task.title}</h3>
-              <p className="text-gray-700">Description: {task.description}</p>
-              <p className="text-gray-500">Due Date & Time: {new Date(task.dueDate).toLocaleString()}</p>
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded mt-2"
-                onClick={() => handleCompleteTask(task.id)}
-              >
-                Mark as Completed
-              </button>
-            </li>
-          ))
-        ) : (
-          <p>No tasks found</p>
-        )}
+    <div>
+      <h1>My Tasks</h1>
+      {message && <p>{message}</p>}
+      <ul>
+        {tasks.map((task) => (
+          <TaskItem 
+            key={task._id} 
+            task={task} 
+            onEdit={handleEdit} 
+            onDelete={handleDelete} 
+            onMarkCompleted={handleMarkAsCompleted} 
+          />
+        ))}
       </ul>
     </div>
   );
