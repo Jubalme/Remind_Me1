@@ -1,5 +1,5 @@
 const express = require('express');
-const { addTask, getTasks} = require('../controllers/taskcontroller');
+const { addTask, getTasks , deleteTask, markTaskAsCompleted, updateTask} = require('../controllers/taskcontroller');
 const authMiddleware = require('../middleware/auth'); // Authentication middleware
 
 const router = express.Router();
@@ -9,6 +9,16 @@ router.post('/add', authMiddleware, addTask);
 
 
 // Fetch tasks for authenticated user
-router.get('/tasks', getTasks);
+router.post('/add', authMiddleware, addTask);
+router.get('/my-tasks', authMiddleware, getTasks); // Apply authMiddleware to protect this route
+// Delete a task
+router.delete('/:id', authMiddleware, deleteTask);
+
+// Mark task as completed
+router.patch('/:id/complete', authMiddleware, markTaskAsCompleted);
+
+// Other routes
+router.put('/:taskId', authMiddleware, updateTask); // Route for updating a task
+
 
 module.exports = router;

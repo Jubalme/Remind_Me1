@@ -19,7 +19,7 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Include additional methods like PUT and DELETE for tasks
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH' ], // Include additional methods like PUT and DELETE for tasks
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 

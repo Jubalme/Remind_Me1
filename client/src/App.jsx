@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import AddTaskPage from './pages/AddTaskPage';
 import MyTasksPage from './pages/MyTasksPage';
 import CompletedTasksPage from './pages/CompletedTasksPage';
+import EditTask from './pages/EditTask'; 
 import { useState } from 'react';
 
 // App component
@@ -42,6 +43,7 @@ const App = () => {
                 <>
                   <Link to="/register" className="hover:text-gray-200">Register</Link>
                   <Link to="/login" className="hover:text-gray-200">Login</Link>
+                  
                 </>
               )}
             </div>
@@ -61,6 +63,9 @@ const App = () => {
             <Route path="/dashboard/add-task" element={isAuthenticated ? <AddTaskPage /> : <Navigate to="/" />} />
             <Route path="/dashboard/my-tasks" element={isAuthenticated ? <MyTasksPage /> : <Navigate to="/" />} />
             <Route path="/dashboard/completed-tasks" element={isAuthenticated ? <CompletedTasksPage /> : <Navigate to="/" />} />
+            <Route path="/dashboard/tasks/edit/:taskId" element={isAuthenticated ? <EditTask /> : <Navigate to="/" />} />
+            <Route path="/dashboard/completed-tasks" element={isAuthenticated ? <CompletedTasksPage /> : <Navigate to="/" />} />
+
           </Routes>
         </main>
       </div>
