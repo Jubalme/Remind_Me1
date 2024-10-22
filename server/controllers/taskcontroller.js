@@ -89,6 +89,18 @@ const updateTask = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+// taskController.js
+
+// Fetch all tasks and filter completed ones
+const getCompletedTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({ user: req.user._id, completed: true });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching completed tasks' });
+  }
+};
+
 
 // Export all the functions in one statement
-module.exports = { addTask, getTasks, deleteTask, markTaskAsCompleted, updateTask };
+module.exports = { addTask, getTasks, deleteTask, markTaskAsCompleted, updateTask, getCompletedTasks};

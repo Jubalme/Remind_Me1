@@ -14,7 +14,7 @@ const MyTasksPage = () => {
       const token = localStorage.getItem('token');
 
       if (!token) {
-        setMessage('You are not authorized');
+        setMessage('You are not authorized. Please log in.');
         setLoading(false);
         return;
       }
@@ -27,7 +27,7 @@ const MyTasksPage = () => {
         });
 
         if (response.data.length === 0) {
-          setMessage('No tasks added');
+          setMessage('No tasks added yet.');
         } else {
           setTasks(response.data.filter(task => !task.completed)); // Filter for incomplete tasks
         }
@@ -42,7 +42,7 @@ const MyTasksPage = () => {
     fetchTasks();
   }, []);
 
-  // Function to handle delete task
+  // Function to handle task deletion
   const handleDelete = async (taskId) => {
     const token = localStorage.getItem('token');
     try {
@@ -59,7 +59,7 @@ const MyTasksPage = () => {
     }
   };
 
-  // Function to handle mark as completed
+  // Function to handle marking task as completed
   const handleMarkAsCompleted = async (taskId) => {
     const token = localStorage.getItem('token');
     try {
@@ -76,26 +76,28 @@ const MyTasksPage = () => {
     }
   };
 
-  // Remove the handleEdit function
-  // Instead, use the onEdit prop in the TaskItem component directly
-
   return (
-    <div>
-      <h1>My Tasks</h1>
-      {loading ? <p>Loading tasks...</p> : message && <p>{message}</p>}
-      <ul>
+    <div className="min-h-screen bg-purple-50 p-6">
+      <h1 className="text-3xl font-bold text-purple-600 mb-6">My Tasks</h1>
+      {loading ? (
+        <p className="text-purple-500">Loading tasks...</p>
+      ) : (
+        message && <p className="text-purple-600">{message}</p>
+      )}
+      <ul className="space-y-4">
         {tasks.map((task) => (
           <TaskItem 
             key={task._id} 
             task={task} 
-            onEdit={() => (
-              <Link to={`/dashboard/tasks/edit/${task._id}`}>Edit</Link>
-            )} // Update this to use Link
             onDelete={handleDelete} 
-            onMarkCompleted={handleMarkAsCompleted} 
+            onMarkCompleted={handleMarkAsCompleted}
+            // Pass the Link to Edit route if editing is available
+            onEdit={() => <Link to={`/dashboard/tasks/edit/${task._id}`}>Edit</Link>}
           />
         ))}
       </ul>
+      {/* Optionally add a link to Completed Tasks page */}
+      <Link to="/completed-tasks" className="text-blue-600 hover:underline mt-6 block">View Completed Tasks</Link>
     </div>
   );
 };
