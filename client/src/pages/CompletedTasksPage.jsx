@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import TaskItem from '../components/TaskItem'; // Assuming you have a TaskItem component for task display
+import TaskItem2 from '../components/TaskItem2';
 import { useNavigate } from 'react-router-dom';
 
 const CompletedTasksPage = () => {
@@ -16,7 +16,7 @@ const CompletedTasksPage = () => {
       const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
 
       if (!token) {
-        setMessage('You are not authorized');
+        setMessage('You are not authorized. Please log in.');
         setLoading(false);
         return;
       }
@@ -31,7 +31,7 @@ const CompletedTasksPage = () => {
         const completedTasks = response.data;
 
         if (completedTasks.length === 0) {
-          setMessage('No completed tasks');
+          setMessage('No completed tasks.');
         } else {
           setTasks(completedTasks);
         }
@@ -58,26 +58,26 @@ const CompletedTasksPage = () => {
 
       // Remove the deleted task from the state
       setTasks(tasks.filter((task) => task._id !== taskId));
+      setMessage('Task deleted successfully');
     } catch (error) {
       console.error('Error deleting task:', error);
+      setMessage(`Error deleting task: ${error.response ? error.response.data.message : error.message}`);
     }
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Completed Tasks</h1>
+    <div className="min-h-screen bg-purple-50 p-6">
+      <h1 className="text-3xl font-bold text-purple-600 mb-6 text-center">Completed Tasks</h1>
       {loading ? (
-        <p className="text-center text-gray-600">Loading tasks...</p>
+        <p className="text-purple-500 text-center">Loading tasks...</p>
       ) : (
-        message && <p className="text-center text-red-500">{message}</p>
+        message && <p className="text-purple-600 text-center">{message}</p>
       )}
       <ul className="space-y-4">
         {tasks.map((task) => (
-          <TaskItem 
+          <TaskItem2
             key={task._id} 
             task={task} 
-            onEdit={null} // Disable edit option for completed tasks
-            onMarkCompleted={null} // Disable marking as complete
             onDelete={handleDelete} // Allow task deletion
           />
         ))}
