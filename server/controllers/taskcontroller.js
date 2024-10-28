@@ -50,8 +50,8 @@ const deleteTask = async (req, res) => {
 
 // Mark task as completed
 const markTaskAsCompleted = async (req, res) => {
-  const taskId = req.params.id;
-  const userId = req.user.id;
+  const taskId = req.params.taskId;
+  const userId = req.user.id; // Ensure this matches your authentication middleware setup
 
   try {
     const task = await Task.findOneAndUpdate(
@@ -59,6 +59,7 @@ const markTaskAsCompleted = async (req, res) => {
       { completed: true },
       { new: true }
     );
+
     if (!task) {
       return res.status(404).json({ message: 'Task not found or not authorized' });
     }

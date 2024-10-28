@@ -63,18 +63,27 @@ const MyTasksPage = () => {
   const handleMarkAsCompleted = async (taskId) => {
     const token = localStorage.getItem('token');
     try {
-      await axios.patch(`http://localhost:3000/api/tasks/${taskId}/complete`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setTasks(tasks.map(task => (task._id === taskId ? { ...task, completed: true } : task)));
-      setMessage('Task marked as completed');
+      const response = await axios.patch(
+        `http://localhost:3000/api/tasks/${taskId}/complete`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setTasks(tasks.map(task => (task._id === taskId ? { ...task, completed: true } : task)));
+        setMessage('Task marked as completed');
+      } else {
+        setMessage(response.data.message || 'Error marking task as completed');
+      }
     } catch (error) {
       console.error('Error marking task as completed:', error);
       setMessage(`Error marking task as completed: ${error.response ? error.response.data.message : error.message}`);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-purple-50 p-6">
@@ -92,12 +101,11 @@ const MyTasksPage = () => {
             onDelete={handleDelete} 
             onMarkCompleted={handleMarkAsCompleted}
             // Pass the Link to Edit route if editing is available
-            onEdit={() => <Link to={`/dashboard/tasks/edit/${task._id}`}>Edit</Link>}
+            onEdit={() =>   <Link to={`/dashboard/tasks/edit/${tasks._id}`}>Edit</Link>}
           />
         ))}
       </ul>
-      {/* Optionally add a link to Completed Tasks page */}
-      <Link to="/completed-tasks" className="text-blue-600 hover:underline mt-6 block">View Completed Tasks</Link>
+   
     </div>
   );
 };

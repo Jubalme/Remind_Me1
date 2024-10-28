@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const EditTask = () => {
   const { taskId } = useParams();
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
   const [task, setTask] = useState({ title: '', description: '', dueDate: '', dueTime: '' });
   const [message, setMessage] = useState('');
 
@@ -18,8 +18,15 @@ const EditTask = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setTask(response.data);
+        const { title, description, dueDate, dueTime } = response.data;
+        setTask({
+          title,
+          description,
+          dueDate: dueDate ? dueDate.split('T')[0] : '', // Format date to YYYY-MM-DD
+          dueTime: dueTime || '' // Set dueTime as a string or empty
+        });
       } catch (error) {
+        console.error('Error fetching task:', error);
         setMessage('Error fetching task');
       }
     };
@@ -35,19 +42,15 @@ const EditTask = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const updatedTask = {
-        ...task,
-        dueDate: new Date(task.dueDate), // Convert to Date object
-        dueTime: task.dueTime, // Keep the dueTime as a string
-      };
-      await axios.put(`http://localhost:3000/api/tasks/${taskId}`, updatedTask, {
+      await axios.put(`http://localhost:3000/api/tasks/${taskId}`, task, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setMessage('Task updated successfully');
-      navigate('/dashboard/my-tasks'); // Redirect to MyTasksPage after editing
+      navigate('/dashboard/my-tasks');
     } catch (error) {
+      console.error('Error updating task:', error);
       setMessage('Error updating task');
     }
   };
@@ -64,6 +67,7 @@ const EditTask = () => {
             name="title"
             value={task.title}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div>
@@ -72,6 +76,7 @@ const EditTask = () => {
             name="description"
             value={task.description}
             onChange={handleInputChange}
+            required
           ></textarea>
         </div>
         <div>
@@ -79,8 +84,9 @@ const EditTask = () => {
           <input
             type="date"
             name="dueDate"
-            value={task.dueDate.split('T')[0]} // Assuming dueDate is in ISO format
+            value={task.dueDate}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div>
@@ -88,8 +94,9 @@ const EditTask = () => {
           <input
             type="time"
             name="dueTime"
-            value={task.dueTime} // Ensure dueTime is part of the task state
+            value={task.dueTime}
             onChange={handleInputChange}
+            required
           />
         </div>
         <button type="submit">Update Task</button>
